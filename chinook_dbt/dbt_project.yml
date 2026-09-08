@@ -1,0 +1,32 @@
+name: 'chinook_dbt_cert'
+version: '1.0.0'
+config-version: 2
+
+profile: 'chinook_dbt_cert'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  # Example project-level var — used to demonstrate {{ var() }} in Jinja/macros
+  chinook_currency_default: "USD"
+
+models:
+  chinook_dbt_cert:
+    # Materialization defaults by folder — demonstrates config precedence
+    # (in-file config() > this file > adapter default)
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+      +tags: ["marts"]

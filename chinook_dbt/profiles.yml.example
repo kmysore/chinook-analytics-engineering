@@ -1,0 +1,16 @@
+# Copy this to ~/.dbt/profiles.yml (or merge into your existing one).
+# Rename the top-level key if you already use "chinook_dbt_cert" elsewhere.
+
+chinook_dbt_cert:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth              # uses your local gcloud auth — no service account needed for sandbox
+      project: your-gcp-project-id   # <-- EDIT THIS to match load_to_bigquery.sh
+      dataset: chinook_dev            # dbt will write built models here
+      threads: 4
+      location: US                    # match the location used in load_to_bigquery.sh
+      priority: interactive
+      # BigQuery Sandbox note: no billing account required for oauth + on-demand
+      # queries under the free tier (1 TiB queries / 10 GB storage per month).

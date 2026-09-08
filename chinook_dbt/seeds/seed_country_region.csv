@@ -1,0 +1,25 @@
+country,region,currency_code
+Argentina,LATAM,ARS
+Australia,APAC,AUD
+Austria,EMEA,EUR
+Belgium,EMEA,EUR
+Brazil,LATAM,BRL
+Canada,NA,CAD
+Chile,LATAM,CLP
+Czech Republic,EMEA,CZK
+Denmark,EMEA,DKK
+Finland,EMEA,EUR
+France,EMEA,EUR
+Germany,EMEA,EUR
+Hungary,EMEA,HUF
+India,APAC,INR
+Ireland,EMEA,EUR
+Italy,EMEA,EUR
+Netherlands,EMEA,EUR
+Norway,EMEA,NOK
+Poland,EMEA,PLN
+Portugal,EMEA,EUR
+Spain,EMEA,EUR
+Sweden,EMEA,SEK
+USA,NA,USD
+United Kingdom,EMEA,GBP

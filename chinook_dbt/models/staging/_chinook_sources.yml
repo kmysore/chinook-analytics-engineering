@@ -1,0 +1,106 @@
+version: 2
+
+sources:
+  - name: chinook_raw
+    description: "Raw Chinook digital media store data, loaded from CSV into BigQuery."
+    database: chinook-music-store-analytics   # <-- EDIT to match your GCP project
+    schema: chinook_raw              # matches the dataset created in load_to_bigquery.sh
+
+    # Source freshness — exam-relevant. Checked via `dbt source freshness`.
+    # loaded_at_field must exist on the table; invoices.InvoiceDate is our proxy
+    # since Chinook has no true "loaded_at" column.
+    tables:
+      - name: invoices
+        description: "One row per customer invoice."
+        loaded_at_field: CAST(InvoiceDate AS TIMESTAMP)
+        freshness:
+          warn_after: {count: 720, period: hour}   # 30 days — Chinook data is static/historical
+          error_after: {count: 8760, period: hour}  # 365 days
+        columns:
+          - name: InvoiceId
+            description: "Primary key."
+          - name: CustomerId
+            description: "Foreign key to customers."
+          - name: InvoiceDate
+          - name: BillingCountry
+          - name: Total
+
+      - name: invoice_items
+        description: "Line items for each invoice — one row per track purchased within an invoice."
+        columns:
+          - name: InvoiceLineId
+            description: "Primary key."
+          - name: InvoiceId
+            description: "Foreign key to invoices."
+          - name: TrackId
+            description: "Foreign key to tracks."
+          - name: UnitPrice
+          - name: Quantity
+
+      - name: customers
+        description: "Customer master data."
+        columns:
+          - name: CustomerId
+            description: "Primary key."
+          - name: SupportRepId
+            description: "Foreign key to employees — the customer's assigned support rep."
+
+      - name: employees
+        description: "Employee master data, including a self-referencing manager hierarchy."
+        columns:
+          - name: EmployeeId
+            description: "Primary key."
+          - name: ReportsTo
+            description: "Self-referencing FK to employees.EmployeeId. Raw value uses '---' as a null placeholder for the top-level manager — cleaned in staging."
+
+      - name: tracks
+        description: "Track catalog."
+        columns:
+          - name: TrackId
+            description: "Primary key."
+          - name: AlbumId
+            description: "Foreign key to albums."
+          - name: MediaTypeId
+            description: "Foreign key to media_types."
+          - name: GenreId
+            description: "Foreign key to genres."
+
+      - name: albums
+        description: "Album catalog."
+        columns:
+          - name: AlbumId
+            description: "Primary key."
+          - name: ArtistId
+            description: "Foreign key to artists."
+
+      - name: artists
+        description: "Artist catalog."
+        columns:
+          - name: ArtistId
+            description: "Primary key."
+
+      - name: genres
+        description: "Music genre lookup."
+        columns:
+          - name: GenreId
+            description: "Primary key."
+
+      - name: media_types
+        description: "Media format lookup (e.g. MPEG audio file)."
+        columns:
+          - name: MediaTypeId
+            description: "Primary key."
+
+      - name: playlists
+        description: "Playlist master data."
+        columns:
+          - name: PlaylistId
+            description: "Primary key."
+
+      - name: playlist_tracks
+        description: "Bridge table — many-to-many between playlists and tracks."
+        columns:
+          - name: PlaylistId
+            description: "Foreign key to playlists."
+          - name: TrackId
+            description: "Foreign key to tracks."
