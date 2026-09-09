@@ -12,10 +12,11 @@ sources:
     tables:
       - name: invoices
         description: "One row per customer invoice."
-        loaded_at_field: CAST(InvoiceDate AS TIMESTAMP)
-        freshness:
-          warn_after: {count: 720, period: hour}   # 30 days — Chinook data is static/historical
-          error_after: {count: 8760, period: hour}  # 365 days
+        config:
+          loaded_at_field: CAST(InvoiceDate AS TIMESTAMP)
+          freshness:
+            warn_after: {count: 720, period: hour}   # 30 days — Chinook data is static/historical
+            error_after: {count: 8760, period: hour}  # 365 days
         columns:
           - name: InvoiceId
             description: "Primary key."
